@@ -12,13 +12,11 @@ vectorSum a b =
 		then error "Dimension Mismatch" 
 		else zipWith (+) a b
 
-
 vectorSubtract ::[Float] -> [Float] -> [Float] 
 vectorSubtract a b = 
 	if length a /= length b
 		then error "Dimension Mismatch" 
 		else zipWith (-) a b
-
 
 isOrthogonal ::[Float] -> [Float] -> Bool
 isOrthogonal a b = dotProd a b == 0
@@ -78,7 +76,29 @@ rowReduce matrix =
 				    pivot = fst pivotRow
 				    newRow = snd pivotRow
 				in internalHelper (reduce newMat pivot pivPos rowPos) (pivPos+1) (newRow+1) 
+
+augment :: [[Float]] -> [[Float]] -> [[Float]]
+augment matrix aug =
+	if isValid matrix && isValid aug && (length matrix)==(length aug)
+		then transpose ((transpose matrix) ++(transpose aug))
+		else error "Dimension Mismatch" 	
+
+splitMatrixAt :: [[Float]] -> Int -> ([[Float]],[[Float]])
+splitMatrixAt matrix col = (transpose $ take col mat, transpose $ drop col mat) 
+	where 
+	     mat = transpose matrix 
+
+generateIdentity :: Int -> [[Float]]
+generateIdentity n = [[4]]
 	
+
+matrixInverse :: [[Float]] -> [[Float]] 
+matrixInverse matrix = matrix 
+
+--TODO fix type decloration for return value
+solveSystem :: [[Float]] -> [[Float]]
+solveSystem matrix = matrix 
+
 nullSpace :: [[Float]] -> [[Float]]
 nullSpace matrix = matrix
 
@@ -105,3 +125,8 @@ createPivotRow matrix p r
 applyPivotRow :: [[Float]]-> [Float]-> Int -> [Float] -> [Float]
 applyPivotRow matrix pivotRow p row = vectorSubtract row (constProd pivotRow $row!!p)
 
+rotateLeft :: [Float] -> Int -> [Float]
+rotateLeft list n = drop n list ++ take n list
+
+rotateRight :: [Float] -> Int -> [Float] 
+rotateRight list n = drop (length list -n) list ++ take (length list - n) list
