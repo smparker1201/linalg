@@ -89,11 +89,15 @@ splitMatrixAt matrix col = (transpose $ take col mat, transpose $ drop col mat)
 	     mat = transpose matrix 
 
 generateIdentity :: Int -> [[Float]]
-generateIdentity n = [[4]]
-	
+generateIdentity n = [(rotateRight rowOne x) | x <- [0..(n-1)]] 
+	where rowOne = 1:[0 | x <- [1..(n-1)]]
 
+	
 matrixInverse :: [[Float]] -> [[Float]] 
-matrixInverse matrix = matrix 
+matrixInverse matrix =
+	if isValid matrix && isSquare matrix 
+		then snd (splitMatrixAt (rowReduce $augment matrix (generateIdentity (length matrix))) (length matrix)) 
+		else error "Square Matrix Required" 
 
 --TODO fix type decloration for return value
 solveSystem :: [[Float]] -> [[Float]]
@@ -107,6 +111,10 @@ columnSpace matrix = matrix
 
 rowSpace :: [[Float]] -> [[Float]]
 rowSpace matrix = matrix
+
+rank :: [[Float]] -> Int
+rank matrix = 1
+
 -----------------------------Internal Helper Functions---------------------------------------
 reduce :: [[Float]] -> [Float] -> Int -> Int-> [[Float]]
 reduce matrix pivotRow p r = insertRow (map (applyPivotRow matrix pivotRow p) (removeRow matrix r)) pivotRow r
