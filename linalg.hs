@@ -12,7 +12,7 @@ vectorSum a b =
 		then error "Dimension Mismatch" 
 		else zipWith (+) a b
 
-vectorSubtract ::[Float] -> [Float] -> [Float] 
+vectorSubtract ::[Float] -> [Float] -> [Float]
 vectorSubtract a b = 
 	if length a /= length b
 		then error "Dimension Mismatch" 
@@ -100,8 +100,14 @@ matrixInverse matrix =
 		else error "Square Matrix Required" 
 
 --TODO fix type decloration for return value
-solveSystem :: [[Float]] -> [[Float]]
-solveSystem matrix = matrix 
+--solveSystem :: [[Float]] -> [[Float]] -> [[Float]]
+--solveSystem a b = solve $ rowReduce $ augment a b
+--	where 
+--		solve matrix
+--			| (length $ filter (\x -> x == True) $ map (isInconsistentRow) matrix) > 0 = error "Inconsistent System"  
+--			| (sum (map (sum) (fst (splitMatrixAt matrix (length matrix))))) == length matrix = snd (splitMatrixAt (length matrix) matrix)
+--			| otherwise = [[2]]
+			  
 
 nullSpace :: [[Float]] -> [[Float]]
 nullSpace matrix = matrix
@@ -138,3 +144,8 @@ rotateLeft list n = drop n list ++ take n list
 
 rotateRight :: [Float] -> Int -> [Float] 
 rotateRight list n = drop (length list -n) list ++ take (length list - n) list
+
+isInconsistentRow :: [Float] -> Bool 
+isInconsistentRow row 
+		| all (\x -> x==0) (take (length row -1) row) && last row > 0 = True
+		| otherwise = False
